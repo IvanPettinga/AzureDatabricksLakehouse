@@ -1,2 +1,2 @@
-# AzureDatanricksLakehouse
+# AzureDatabricksLakehouse
 Deployment infrastructure for AzureDatabricks
