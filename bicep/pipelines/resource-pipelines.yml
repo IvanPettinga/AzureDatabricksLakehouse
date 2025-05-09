@@ -1,0 +1,77 @@
+# This pipeline will deploy the resources to the environment
+
+# parameters included resources
+# parameters for environment to deploy to
+parameters:
+- name: environment
+  type: string
+- name: deployUnami
+  type: boolean
+- name: deployKeyVault
+  type: boolean
+- name: deployStorage
+  type: boolean
+- name: deployDatabricks
+  type: boolean
+
+
+variables:
+- group: dwh_${{parameters.environment}}
+
+stages: 
+
+ # if included unami run the user assigned management identity pipeline
+- ${{ if eq(parameters.deployUnami, false) }}:
+
+  # ARM template deployment of unami account
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: $(serviceConnectionName)
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: $(ResourceGroup)
+      templateLocation: 'bicep/deployment/deploy_unami.bicep'
+      csmParametersFile: 'bicep/parameters/unami.bicepparam'
+      deploymentMode: 'Incremental'
+
+ # if included key vault run the key vault pipeline
+- ${{ if eq(parameters.deployKeyVault, false) }}:
+  
+  # ARM template deployment of key vault
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: $(serviceConnectionName)
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: $(ResourceGroup)
+      templateLocation: 'bicep/deployment/deploy_kv.bicep'
+      csmParametersFile: 'bicep/parameters/kv.bicepparam'
+      deploymentMode: 'Incremental'
+
+ # if included storage run the storage pipeline
+- ${{ if eq(parameters.deployStorage, false) }}:
+
+  # ARM template deployment of storage account
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: $(serviceConnectionName)
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: $(ResourceGroup)
+      templateLocation: 'bicep/deployment/deploy_storage.bicep'
+      csmParametersFile: 'bicep/parameters/storage.bicepparam'
+      deploymentMode: 'Incremental'
+
+   # if included databricks run the databricks pipeline
+- ${{ if eq(parameters.deployDatabricks, false) }}:
+
+  # ARM template deployment of databricks
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: $(serviceConnectionName)
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: $(ResourceGroup)
+      templateLocation: 'bicep/deployment/deploy_databricks.bicep'
+      csmParametersFile: 'bicep/parameters/databricks.bicepparam'
+      deploymentMode: 'Incremental'
