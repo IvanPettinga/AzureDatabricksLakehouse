@@ -2,7 +2,7 @@
 The following code deploys a data platform on Microsoft Azure, with the corresponding required resources. The template deploys a databricks workspace, a storage account, a key vault and spark pools to run in the synapse workspace. It also contains the CI/CD files for AzureDevops to deploy Azure Databricks to a dev/test/acc or production environment. 
 
 > [!NOTE]  
-> The deployment assumes a platform zone has already been deployed including a virtual network, DNS zones and site-to-site VPN.
+> The deployment assumes a platform zone has already been deployed including a virtual network, DNS zones and site to site VPN. And in DevOps and self-hosted built agent is present to perform the deployment.
 
 ## Layout
 Azure-pipelines.yml triggers the following pipelines
